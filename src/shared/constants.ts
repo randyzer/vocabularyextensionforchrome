@@ -1,0 +1,10 @@
+export const HOVER_DELAY_MS = 500;
+export const AUTO_SAVE_DELAY_MS = 1_000;
+export const UNDO_WINDOW_MS = 5_000;
+export const TOOLTIP_CLOSE_DELAY_MS = 200;
+export const CONTENT_SCRIPT_ID = 'context-vocabulary-hover';
+export const WEEKLY_ALARM_NAME = 'weekly-digest';
+export const PENDING_DIGEST_KEY = 'pendingDigestId';
+export const SETTINGS_KEY = 'settings';
+export const SCHEMA_VERSION = 1;
+export const OPTIONAL_ORIGINS = ['http://*/*', 'https://*/*'];
