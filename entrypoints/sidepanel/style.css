@@ -10,11 +10,11 @@ body {
 }
 
 #app {
-  padding: 24px 20px;
+  min-height: 100vh;
 }
 
 h1 {
-  margin: 0 0 20px;
+  margin: 0;
   font-size: 24px;
 }
 
@@ -24,7 +24,7 @@ p {
 }
 
 .status {
-  margin: 20px 0;
+  margin: 0;
   padding: 12px;
   border: 1px solid #deddd4;
   border-radius: 8px;
@@ -52,4 +52,126 @@ button {
 button:disabled {
   cursor: wait;
   opacity: 0.6;
+}
+
+.panel-shell {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.panel-header {
+  display: grid;
+  gap: 10px;
+}
+
+.panel-nav {
+  display: flex;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 8px;
+  border: 1px solid #deddd4;
+  border-radius: 12px;
+  background: rgba(247, 246, 240, 0.96);
+  backdrop-filter: blur(10px);
+}
+
+.panel-nav button {
+  width: auto;
+  min-width: 88px;
+  background: #dce8df;
+  color: #274334;
+}
+
+.panel-nav button[aria-current] {
+  background: #246b49;
+  color: #fff;
+}
+
+.panel-content {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-panel {
+  padding: 14px;
+  border: 1px solid #deddd4;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.settings-form {
+  display: grid;
+  gap: 14px;
+}
+
+.settings-toggle,
+.settings-range {
+  display: grid;
+  gap: 8px;
+  color: #274334;
+  font-weight: 600;
+}
+
+.settings-toggle {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.settings-toggle input {
+  margin: 0;
+}
+
+.settings-range input {
+  width: 100%;
+}
+
+.settings-disabled-sites {
+  color: #536159;
+  line-height: 1.6;
+}
+
+.capture-card,
+.vocabulary-group {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #deddd4;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.capture-card h2,
+.vocabulary-group h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.capture-definitions,
+.capture-sentence {
+  margin: 0;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.card-actions button {
+  width: auto;
+}
+
+.vocabulary-group ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #536159;
+}
+
+mark {
+  padding: 0 2px;
+  border-radius: 4px;
+  color: #201f1c;
+  background: #ffe08a;
 }

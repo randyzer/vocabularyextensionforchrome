@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_SETTINGS,
+  isOriginEnabled,
   sanitizeSettings,
 } from '../../src/storage/settings-repository';
 
@@ -44,5 +45,24 @@ describe('settings', () => {
     expect(settings.enabled).toBe(false);
     expect(settings.disabledOrigins).toEqual(['https://example.com']);
     expect(settings).not.toHaveProperty('analyticsEnabled');
+  });
+
+  it('disables globally paused and explicitly excluded origins', () => {
+    expect(isOriginEnabled(DEFAULT_SETTINGS, 'https://example.com')).toBe(true);
+    expect(
+      isOriginEnabled(
+        { ...DEFAULT_SETTINGS, enabled: false },
+        'https://example.com',
+      ),
+    ).toBe(false);
+    expect(
+      isOriginEnabled(
+        {
+          ...DEFAULT_SETTINGS,
+          disabledOrigins: ['https://example.com'],
+        },
+        'https://example.com',
+      ),
+    ).toBe(false);
   });
 });

@@ -57,3 +57,7 @@ export async function saveSettings(
   await browser.storage.local.set({ [SETTINGS_KEY]: settings });
   return settings;
 }
+
+export function isOriginEnabled(settings: Settings, origin: string): boolean {
+  return settings.enabled && !settings.disabledOrigins.includes(origin);
+}

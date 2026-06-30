@@ -68,10 +68,19 @@ export function createMessageHandler(dependencies: RouterDependencies) {
             return { ok: false, error: 'WORD_NOT_FOUND' };
           }
 
+          const settings = await dependencies.getSettings();
+          const payload = settings.saveSource
+            ? request.payload
+            : {
+                ...request.payload,
+                sourceTitle: '',
+                sourceUrl: new URL('/', request.payload.sourceUrl).toString(),
+              };
+
           return {
             ok: true,
             data: await dependencies.saveCapture(
-              request.payload,
+              payload,
               lookup.entry,
             ),
           };

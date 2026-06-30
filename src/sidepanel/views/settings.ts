@@ -1,0 +1,121 @@
+import { OPTIONAL_ORIGINS } from '../../shared/constants';
+import type { Settings } from '../../shared/models';
+import { send } from '../api';
+
+function createToggle(
+  settings: Settings,
+  labelText: string,
+  key: 'enabled' | 'autoSpeak' | 'saveSource',
+  refresh: () => void,
+): HTMLElement {
+  const label = document.createElement('label');
+  label.className = 'settings-toggle';
+
+  const input = document.createElement('input');
+  input.type = 'checkbox';
+  input.checked = settings[key];
+  input.addEventListener('change', async () => {
+    await send({
+      type: 'SAVE_SETTINGS',
+      patch: { [key]: input.checked },
+    });
+    refresh();
+  });
+
+  const text = document.createElement('span');
+  text.textContent = labelText;
+  label.append(input, text);
+
+  return label;
+}
+
+export async function renderSettings(
+  container: HTMLElement,
+  refresh: () => void,
+): Promise<void> {
+  const [settings, permitted] = await Promise.all([
+    send<Settings>({ type: 'GET_SETTINGS' }),
+    browser.permissions.contains({ origins: OPTIONAL_ORIGINS }),
+  ]);
+  container.replaceChildren();
+
+  const section = document.createElement('section');
+  section.className = 'settings-panel';
+
+  const form = document.createElement('form');
+  form.className = 'settings-form';
+
+  const rateLabel = document.createElement('label');
+  rateLabel.className = 'settings-range';
+  rateLabel.textContent = `发音速度 ${settings.speechRate.toFixed(1)}x`;
+
+  const rate = document.createElement('input');
+  rate.type = 'range';
+  rate.min = '0.5';
+  rate.max = '2';
+  rate.step = '0.1';
+  rate.value = String(settings.speechRate);
+  rate.addEventListener('change', async () => {
+    await send({
+      type: 'SAVE_SETTINGS',
+      patch: { speechRate: Number(rate.value) },
+    });
+    refresh();
+  });
+  rateLabel.append(rate);
+
+  const disabledSites = document.createElement('div');
+  disabledSites.className = 'settings-disabled-sites';
+  disabledSites.textContent = settings.disabledOrigins.length > 0
+    ? `已停用站点：${settings.disabledOrigins.join('，')}`
+    : '当前没有停用站点。';
+
+  const disableSite = document.createElement('button');
+  disableSite.type = 'button';
+  disableSite.textContent = '输入要停用的站点';
+  disableSite.addEventListener('click', async () => {
+    const origin = prompt('输入完整来源，例如 https://example.com');
+
+    if (!origin) {
+      return;
+    }
+
+    await send({
+      type: 'SAVE_SETTINGS',
+      patch: {
+        disabledOrigins: [...settings.disabledOrigins, origin],
+      },
+    });
+    refresh();
+  });
+
+  const permission = document.createElement('button');
+  permission.type = 'button';
+  permission.textContent = permitted
+    ? '网页权限已授予'
+    : '检查或重新授予网页权限';
+  permission.disabled = permitted;
+  permission.addEventListener('click', async () => {
+    const granted = await browser.permissions.request({
+      origins: OPTIONAL_ORIGINS,
+    });
+    await send({
+      type: 'SAVE_SETTINGS',
+      patch: { hostPermissionOnboardingComplete: granted },
+    });
+    await send({ type: 'SYNC_CONTENT_REGISTRATION' });
+    refresh();
+  });
+
+  form.append(
+    createToggle(settings, '启用取词', 'enabled', refresh),
+    createToggle(settings, '自动发音', 'autoSpeak', refresh),
+    createToggle(settings, '保存原网页来源', 'saveSource', refresh),
+    rateLabel,
+    disabledSites,
+    disableSite,
+    permission,
+  );
+  section.append(form);
+  container.append(section);
+}

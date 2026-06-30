@@ -1,6 +1,6 @@
 import { startContentRuntime } from '../src/content';
 
-export default defineUnlistedScript(() => {
-  const stop = startContentRuntime();
+export default defineUnlistedScript(async () => {
+  const stop = await startContentRuntime();
   window.addEventListener('pagehide', stop, { once: true });
 });

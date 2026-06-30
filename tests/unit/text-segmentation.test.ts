@@ -64,4 +64,15 @@ describe('text segmentation', () => {
     editable.setAttribute('contenteditable', 'true');
     expect(isIgnoredElement(editable)).toBe(true);
   });
+
+  it('does not treat HTML-like sentence text as markup', async () => {
+    const { createHighlightedSentence } = await import(
+      '../../src/sidepanel/components/capture-card'
+    );
+    const node = createHighlightedSentence('Use <script> safely', 4, 12);
+
+    expect(node.querySelector('script')).toBeNull();
+    expect(node.textContent).toBe('Use <script> safely');
+    expect(node.querySelector('mark')?.textContent).toBe('<script>');
+  });
 });

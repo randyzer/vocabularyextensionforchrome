@@ -104,6 +104,35 @@ describe('message handler', () => {
     );
   });
 
+  it('removes page-level source details when source saving is disabled', async () => {
+    const dependencies = createDependencies();
+    const entry = { lemma: 'ultimately', definitionsZh: ['最终'] };
+    const saved = { capture: { id: crypto.randomUUID() }, savedAt: 100 };
+
+    vi.mocked(dependencies.lookup).mockResolvedValue({
+      lookupStatus: 'found',
+      entry,
+    });
+    vi.mocked(dependencies.getSettings).mockResolvedValue({
+      ...settings,
+      saveSource: false,
+    });
+    vi.mocked(dependencies.saveCapture).mockResolvedValue(saved as never);
+
+    await expect(createMessageHandler(dependencies)({
+      type: 'SAVE_CAPTURE',
+      payload: capturePayload,
+    })).resolves.toEqual({ ok: true, data: saved });
+    expect(dependencies.saveCapture).toHaveBeenCalledWith(
+      {
+        ...capturePayload,
+        sourceTitle: '',
+        sourceUrl: 'https://example.com/',
+      },
+      entry,
+    );
+  });
+
   it('uses the configured speech rate', async () => {
     const dependencies = createDependencies();
 

@@ -23,7 +23,19 @@ type SettingsResponse =
   | { ok: true; data: Settings }
   | { ok: false; error: string };
 
-export function startContentRuntime(): () => void {
+export async function startContentRuntime(): Promise<() => void> {
+  const settingsResponse = await browser.runtime.sendMessage({
+    type: 'GET_SETTINGS',
+  }) as SettingsResponse;
+
+  if (
+    !settingsResponse.ok
+    || !settingsResponse.data.enabled
+    || settingsResponse.data.disabledOrigins.includes(location.origin)
+  ) {
+    return () => undefined;
+  }
+
   const tooltip = createTooltip();
   let lastKey = '';
   let lastRect = new DOMRect();
