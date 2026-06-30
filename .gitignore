@@ -1,0 +1,8 @@
+.worktrees/
+node_modules/
+.output/
+.wxt/
+test-results/
+playwright-report/
+data/source/
+.DS_Store
