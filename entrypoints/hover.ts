@@ -1,3 +1,6 @@
+import { startContentRuntime } from '../src/content';
+
 export default defineUnlistedScript(() => {
-  document.documentElement.dataset.contextVocabularyLoaded = 'true';
+  const stop = startContentRuntime();
+  window.addEventListener('pagehide', stop, { once: true });
 });
