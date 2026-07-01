@@ -1,5 +1,6 @@
 import { DictionaryEngine } from '../dictionary/engine';
 import type { LookupResult } from '../dictionary/types';
+import { digestService } from './digest-service';
 import {
   extensionRequestSchema,
   type ExtensionResponse,
@@ -155,6 +156,14 @@ export function createMessageHandler(dependencies: RouterDependencies) {
         case 'CLEAR_ALL_DATA':
           await dependencies.clearAllData();
           return { ok: true };
+        case 'TEST_FIRE_ALARM':
+          if (import.meta.env.MODE !== 'test') {
+            return { ok: false, error: 'INVALID_REQUEST' };
+          }
+          return {
+            ok: true,
+            data: await digestService.generate(),
+          };
         default:
           return { ok: false, error: 'NOT_IMPLEMENTED' };
       }

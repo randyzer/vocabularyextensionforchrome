@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "wxt",
     "build": "wxt build",
+    "build:e2e": "wxt build --mode test",
     "zip": "wxt zip",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "pnpm build && playwright test",
+    "test:e2e": "pnpm build:e2e && playwright test",
     "dict:build": "node scripts/build-dictionary.mjs",
     "icons:build": "node scripts/generate-icons.mjs",
     "postinstall": "wxt prepare"

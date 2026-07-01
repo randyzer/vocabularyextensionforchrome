@@ -2,6 +2,10 @@ import { OPTIONAL_ORIGINS } from '../../shared/constants';
 import type { Settings } from '../../shared/models';
 import { send } from '../api';
 
+const settingsOrigins = import.meta.env.MODE === 'test'
+  ? ['http://127.0.0.1/*']
+  : OPTIONAL_ORIGINS;
+
 function createToggle(
   settings: Settings,
   labelText: string,
@@ -35,7 +39,7 @@ export async function renderSettings(
 ): Promise<void> {
   const [settings, permitted] = await Promise.all([
     send<Settings>({ type: 'GET_SETTINGS' }),
-    browser.permissions.contains({ origins: OPTIONAL_ORIGINS }),
+    browser.permissions.contains({ origins: settingsOrigins }),
   ]);
   container.replaceChildren();
 
@@ -97,7 +101,7 @@ export async function renderSettings(
   permission.disabled = permitted;
   permission.addEventListener('click', async () => {
     const granted = await browser.permissions.request({
-      origins: OPTIONAL_ORIGINS,
+      origins: settingsOrigins,
     });
     await send({
       type: 'SAVE_SETTINGS',

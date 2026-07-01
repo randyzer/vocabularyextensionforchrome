@@ -11,6 +11,10 @@ import { renderVocabulary } from './views/vocabulary';
 
 type Route = 'current' | 'vocabulary' | 'digests' | 'settings';
 
+const sidePanelOrigins = import.meta.env.MODE === 'test'
+  ? ['http://127.0.0.1/*']
+  : OPTIONAL_ORIGINS;
+
 function appendTextElement(
   tagName: 'h1' | 'p',
   text: string,
@@ -23,7 +27,7 @@ function appendTextElement(
 export async function startSidePanel(root: HTMLElement): Promise<void> {
   const [settings, permitted, pending] = await Promise.all([
     send<Settings>({ type: 'GET_SETTINGS' }),
-    browser.permissions.contains({ origins: OPTIONAL_ORIGINS }),
+    browser.permissions.contains({ origins: sidePanelOrigins }),
     browser.storage.session.get(PENDING_DIGEST_KEY),
   ]);
 
@@ -48,7 +52,7 @@ export async function startSidePanel(root: HTMLElement): Promise<void> {
 
       try {
         const granted = await browser.permissions.request({
-          origins: OPTIONAL_ORIGINS,
+          origins: sidePanelOrigins,
         });
         await send({
           type: 'SAVE_SETTINGS',

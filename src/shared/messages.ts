@@ -78,6 +78,7 @@ export const extensionRequestSchema = z.discriminatedUnion('type', [
     payload: z.unknown(),
   }),
   z.object({ type: z.literal('CLEAR_ALL_DATA') }),
+  z.object({ type: z.literal('TEST_FIRE_ALARM') }),
   z.object({ type: z.literal('OPEN_CAPTURE_PANEL') }),
 ]);
 
@@ -97,6 +98,7 @@ export type ExtensionRequest =
   | { type: 'EXPORT_DATA' }
   | { type: 'IMPORT_DATA'; payload: unknown }
   | { type: 'CLEAR_ALL_DATA' }
+  | { type: 'TEST_FIRE_ALARM' }
   | { type: 'OPEN_CAPTURE_PANEL' };
 
 export type ExtensionResponse =
