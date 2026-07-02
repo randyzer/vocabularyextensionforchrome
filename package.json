@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "pnpm build:e2e && playwright test",
-    "dict:build": "node scripts/build-dictionary.mjs",
+    "dict:build": "tsx scripts/dictionary/build.ts",
+    "dict:check": "tsx scripts/dictionary/check.ts",
     "icons:build": "node scripts/generate-icons.mjs",
     "postinstall": "wxt prepare"
   },
