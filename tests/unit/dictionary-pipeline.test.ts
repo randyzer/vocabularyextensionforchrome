@@ -108,6 +108,16 @@ describe('dictionary pipeline', () => {
       .toThrow('CUSTOM_DUPLICATE_WORD:ability:row=3');
   });
 
+  it('requires Chinese definitions for custom words', () => {
+    const csv = [
+      'word,phonetic,part_of_speech,definitions_zh,source,note',
+      'ability,,n,ability,maintainer,missing Chinese',
+    ].join('\n');
+
+    expect(() => parseCustomWords(csv))
+      .toThrow('CUSTOM_DEFINITION_NOT_CHINESE:ability:row=2');
+  });
+
   it('reports invalid blocklist rows', () => {
     expect(() => parseBlocklist('valid\nbad123\n'))
       .toThrow('BLOCKLIST_INVALID_WORD:bad123:row=2');

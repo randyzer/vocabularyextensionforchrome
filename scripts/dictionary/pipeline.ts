@@ -180,6 +180,13 @@ export function parseCustomWords(csv: string): ParsedCustomWords {
     if (definitionsZh.length === 0 || source.length === 0) {
       throw new Error(`CUSTOM_REQUIRED_FIELD:${lemma}:row=${info.lines}`);
     }
+    if (!definitionsZh.some((definition) => /[\u3400-\u9fff]/u.test(
+      definition,
+    ))) {
+      throw new Error(
+        `CUSTOM_DEFINITION_NOT_CHINESE:${lemma}:row=${info.lines}`,
+      );
+    }
 
     entries.set(lemma, {
       lemma,
